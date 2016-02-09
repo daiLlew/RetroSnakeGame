@@ -11,6 +11,8 @@ public class Constants {
 
 	public static final int BODY_WIDTH = 25;
 
+	public static final Dimension BODY_DIMENSIONS = new Dimension(BODY_WIDTH, BODY_WIDTH);
+
 	public enum Direction {
 		NORTH,
 

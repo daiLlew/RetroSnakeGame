@@ -6,8 +6,6 @@ import dai.llew.snake.ui.GUI;
 import dai.llew.snake.ui.view.GameScreen;
 import dai.llew.snake.ui.view.GameView;
 
-import java.util.function.Consumer;
-
 import static dai.llew.snake.game.Constants.Direction;
 import static dai.llew.snake.game.Constants.Direction.SOUTH;
 
@@ -18,21 +16,18 @@ public class GameManager implements GameHelper {
 
 	private GUI gui;
 	private GameView welcomeView;
-	private Sprite snake;
+	private Snake snake;
 	private Direction direction;
 
-	private Consumer<Sprite> animateSnake = sprite -> {
-		new Thread(() -> {
-			try {
-				while (true) {
-					snake.move();
-					gui.repaint();
-					Thread.sleep(250);
-				}
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
+	private Runnable animateSnake = () -> {
+		try {
+			while (true) {
+				gui.repaint();
+				Thread.sleep(2000);
 			}
-		}).start();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
 	};
 
 	public static void main(String[] args) {
@@ -47,7 +42,7 @@ public class GameManager implements GameHelper {
 	}
 
 	public void play() {
-		animateSnake.accept(snake);
+		execute(animateSnake);
 	}
 
 	private void execute(Runnable job) {
@@ -55,7 +50,7 @@ public class GameManager implements GameHelper {
 	}
 
 	@Override
-	public Sprite snake() {
+	public Snake snake() {
 		return this.snake;
 	}
 

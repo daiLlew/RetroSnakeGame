@@ -23,6 +23,18 @@ public abstract class Sprite {
 		ACTIVE_SPRITES.remove(sprite);
 	}
 
+	public static List<Sprite> sprites() {
+		return ACTIVE_SPRITES;
+	}
+
+	public static void animate(Graphics2D g) {
+		ACTIVE_SPRITES.forEach(sprite -> {
+			// TODO EACH Sprite needs to remember the premove position.
+			sprite.draw(g);
+			sprite.move();
+		});
+
+	}
 
 	protected GameHelper gameHelper;
 

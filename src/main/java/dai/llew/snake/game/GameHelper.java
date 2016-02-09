@@ -1,6 +1,7 @@
 package dai.llew.snake.game;
 
-import dai.llew.snake.game.sprite.Sprite;
+import dai.llew.snake.game.sprite.Snake;
+
 import static dai.llew.snake.game.Constants.Direction;
 
 /**
@@ -8,7 +9,7 @@ import static dai.llew.snake.game.Constants.Direction;
  */
 public interface GameHelper {
 
-	Sprite snake();
+	Snake snake();
 
 	Direction getDirection();
 

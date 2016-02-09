@@ -1,6 +1,7 @@
 package dai.llew.snake.ui.view;
 
 import dai.llew.snake.game.GameHelper;
+import dai.llew.snake.game.sprite.Sprite;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -23,7 +24,7 @@ public class GameScreen extends GameView {
 
 	@Override
 	public void updateDisplay(Graphics2D g) {
-		gameHelper.snake().draw(g);
+		Sprite.animate(g);
 	}
 
 	@Override
