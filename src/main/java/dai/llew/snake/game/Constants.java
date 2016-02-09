@@ -7,7 +7,9 @@ import java.awt.Dimension;
  */
 public class Constants {
 
-	public static final Dimension WINDOW_DIMENSIONS = new Dimension(1000, 800);
+	public static final Dimension WINDOW_DIMENSIONS = new Dimension(600, 600);
+
+	public static final Dimension BOARD_DIMENSIONS = new Dimension(550, 525);
 
 	public static final int BODY_WIDTH = 25;
 
@@ -21,5 +23,25 @@ public class Constants {
 		EAST,
 
 		WEST;
+
+		public Direction opposite() {
+			switch (this) {
+				case WEST:
+					return EAST;
+				case EAST:
+					return WEST;
+				case SOUTH:
+					return NORTH;
+				default:
+					return SOUTH;
+			}
+		}
+	}
+
+	public enum GameState {
+		IN_PLAY,
+
+		COLLISION_DETECTED
 	}
 }
+

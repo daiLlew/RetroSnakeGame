@@ -3,6 +3,7 @@ package dai.llew.snake.ui.view;
 import dai.llew.snake.game.GameHelper;
 
 import javax.swing.*;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -33,12 +34,14 @@ public abstract class GameView extends JPanel {
 			public void keyReleased(KeyEvent e) {
 			}
 		});
+		this.setBackground(Color.WHITE);
+		this.setVisible(true);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		updateDisplay((Graphics2D)g);
+		updateDisplay((Graphics2D) g);
 	}
 
 	public abstract void updateDisplay(Graphics2D g);

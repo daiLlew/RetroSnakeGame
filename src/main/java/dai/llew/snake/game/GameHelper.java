@@ -2,6 +2,8 @@ package dai.llew.snake.game;
 
 import dai.llew.snake.game.sprite.Snake;
 
+import java.awt.Point;
+
 import static dai.llew.snake.game.Constants.Direction;
 
 /**
@@ -14,4 +16,10 @@ public interface GameHelper {
 	Direction getDirection();
 
 	void updateDirection(Direction newDir);
+
+	Point nextHeadPoint(Point head);
+
+	Point nextTailPoint(Point tail);
+
+	Constants.GameState getGameState();
 }

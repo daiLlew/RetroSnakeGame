@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by daiLlew on 07/02/2016.
@@ -28,12 +29,18 @@ public abstract class Sprite {
 	}
 
 	public static void animate(Graphics2D g) {
-		ACTIVE_SPRITES.forEach(sprite -> {
-			// TODO EACH Sprite needs to remember the premove position.
+		sprites().forEach(sprite -> {
 			sprite.draw(g);
 			sprite.move();
 		});
+	}
 
+	public static boolean checkCollisions() {
+		return sprites()
+				.stream()
+				.filter(sprite -> sprite.isCollide())
+				.findFirst()
+				.isPresent();
 	}
 
 	protected GameHelper gameHelper;

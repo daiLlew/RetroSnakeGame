@@ -6,29 +6,23 @@ import dai.llew.snake.ui.GUI;
 import dai.llew.snake.ui.view.GameScreen;
 import dai.llew.snake.ui.view.GameView;
 
+import java.awt.Point;
+
+import static dai.llew.snake.game.Constants.BODY_WIDTH;
 import static dai.llew.snake.game.Constants.Direction;
 import static dai.llew.snake.game.Constants.Direction.SOUTH;
+import static dai.llew.snake.game.Constants.GameState;
+import static dai.llew.snake.game.Constants.GameState.COLLISION_DETECTED;
+import static dai.llew.snake.game.Constants.GameState.IN_PLAY;
 
-/**
- * Created by daiLlew on 07/02/2016.
- */
+
 public class GameManager implements GameHelper {
 
 	private GUI gui;
 	private GameView welcomeView;
 	private Snake snake;
 	private Direction direction;
-
-	private Runnable animateSnake = () -> {
-		try {
-			while (true) {
-				gui.repaint();
-				Thread.sleep(2000);
-			}
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
-	};
+	private GameState gameState = IN_PLAY;
 
 	public static void main(String[] args) {
 		new GameManager().play();
@@ -41,8 +35,41 @@ public class GameManager implements GameHelper {
 		this.gui = new GUI(welcomeView);
 	}
 
+	private Runnable playGame = () -> {
+		try {
+			inPlay();
+			gameOver();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+		System.exit(0);
+	};
+
+	private void inPlay() throws InterruptedException {
+		while (gameState.equals(IN_PLAY)) {
+			checkCollisions();
+			gui.repaint();
+			Thread.sleep(300);
+		}
+	}
+
+	private void gameOver() throws InterruptedException {
+		int i = 6;
+		while (i > 0) {
+			gui.repaint();
+			Thread.sleep(400);
+			i--;
+		}
+	}
+
+	private void checkCollisions() {
+		if (Sprite.checkCollisions()) {
+			this.gameState = COLLISION_DETECTED;
+		}
+	}
+
 	public void play() {
-		execute(animateSnake);
+		execute(playGame);
 	}
 
 	private void execute(Runnable job) {
@@ -62,5 +89,48 @@ public class GameManager implements GameHelper {
 	@Override
 	public void updateDirection(Direction newDir) {
 		this.direction = newDir;
+	}
+
+	@Override
+	public Point nextHeadPoint(Point head) {
+		Point newCoord;
+		switch (getDirection()) {
+			case NORTH:
+				newCoord = new Point(head.x, head.y - BODY_WIDTH);
+				break;
+			case SOUTH:
+				newCoord = new Point(head.x, head.y + BODY_WIDTH);
+				break;
+			case EAST:
+				newCoord = new Point(head.x + BODY_WIDTH, head.y);
+				break;
+			default:
+				newCoord = new Point(head.x - BODY_WIDTH, head.y);
+		}
+		return newCoord;
+	}
+
+	@Override
+	public Point nextTailPoint(Point tail) {
+		Point newCoord;
+		switch (getDirection()) {
+			case NORTH:
+				newCoord = new Point(tail.x, tail.y + BODY_WIDTH);
+				break;
+			case SOUTH:
+				newCoord = new Point(tail.x, tail.y - BODY_WIDTH);
+				break;
+			case EAST:
+				newCoord = new Point(tail.x - BODY_WIDTH, tail.y);
+				break;
+			default:
+				newCoord = new Point(tail.x + BODY_WIDTH, tail.y);
+		}
+		return newCoord;
+	}
+
+	@Override
+	public GameState getGameState() {
+		return this.gameState;
 	}
 }

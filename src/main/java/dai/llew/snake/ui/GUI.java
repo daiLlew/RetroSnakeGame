@@ -22,6 +22,7 @@ public class GUI {
 		this.main.add(view);
 		this.main.setVisible(true);
 		this.view.requestFocus();
+		this.main.setResizable(false);
 	}
 
 	public void updateView(GameView newView) {

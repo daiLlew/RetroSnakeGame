@@ -2,43 +2,75 @@ package dai.llew.snake.game.sprite;
 
 import dai.llew.snake.game.GameHelper;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
-import java.util.function.Function;
 
-import static dai.llew.snake.game.Constants.BODY_WIDTH;
+import static dai.llew.snake.game.Constants.BOARD_DIMENSIONS;
+import static dai.llew.snake.game.Constants.BODY_DIMENSIONS;
 
-public class Snake {
+public class Snake extends Sprite {
 
-	private LinkedList<SnakeBody> body;
-	private GameHelper gameHelper;
-
-	private Function<Point, Point> calculateNewPos = current -> {
-		Point newCoord;
-		switch (gameHelper.getDirection()) {
-			case NORTH:
-				newCoord = new Point(current.x, current.y - BODY_WIDTH);
-				break;
-			case SOUTH:
-				newCoord = new Point(current.x, current.y + BODY_WIDTH);
-				break;
-			case EAST:
-				newCoord = new Point(current.x + BODY_WIDTH, current.y);
-				break;
-			default:
-				newCoord = new Point(current.x - BODY_WIDTH, current.y);
-		}
-		return newCoord;
-	};
+	private Rectangle boarder = new Rectangle(new Point(25, 25), BOARD_DIMENSIONS);
+	private Rectangle head;
+	private LinkedList<Rectangle> body;
 
 	public Snake(GameHelper gameHelper) {
-		this.gameHelper = gameHelper;
+		super(gameHelper);
 		this.body = new LinkedList<>();
-		body.add(new SnakeBody(gameHelper, new Point(100, 100)));
+		this.head = new Rectangle(new Point(100, 100), BODY_DIMENSIONS);
+		addBody();
 		addBody();
 	}
 
+	@Override
+	public boolean isCollide() {
+		return isBoarderCollison();
+	}
+
+	private boolean isBoarderCollison() {
+		return !boarder.contains(head);
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		drawSnake(g, head, Color.GREEN);
+		body.forEach(rectangle -> drawSnake(g, rectangle, Color.GREEN));
+	}
+
+	private void drawSnake(Graphics2D g, Rectangle rect, Color c) {
+		g.setPaint(c);
+		g.fill(rect);
+		g.setPaint(Color.GREEN);
+		g.draw(rect);
+	}
+
+	@Override
+	public void move() {
+		Point currentPos = head.getLocation();
+		head.setLocation(gameHelper.nextHeadPoint(currentPos));
+		Point prePos = currentPos;
+
+		for (Rectangle rect : body) {
+			prePos = updateLocation(rect, prePos);
+		}
+	}
+
+	private Point updateLocation(Rectangle rect, Point newPoint) {
+		Point current = rect.getLocation();
+		rect.setLocation(newPoint);
+		return current;
+	}
+
 	public void addBody() {
-		body.add(new SnakeBody(gameHelper, body.getLast()));
+		Point newTail;
+		if (body.isEmpty()) {
+			newTail = gameHelper.nextTailPoint(head.getLocation());
+		} else {
+			newTail = gameHelper.nextTailPoint(body.getLast().getLocation());
+		}
+		body.add(new Rectangle(newTail, BODY_DIMENSIONS));
 	}
 }

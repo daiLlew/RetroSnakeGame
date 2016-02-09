@@ -1,9 +1,12 @@
 package dai.llew.snake.ui.view;
 
+import dai.llew.snake.game.Constants;
 import dai.llew.snake.game.GameHelper;
 import dai.llew.snake.game.sprite.Sprite;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
@@ -18,18 +21,36 @@ import static dai.llew.snake.game.Constants.Direction.WEST;
  */
 public class GameScreen extends GameView {
 
+	private boolean toggle = true;
+
 	public GameScreen(GameHelper gameHelper) {
 		super(gameHelper);
 	}
 
 	@Override
 	public void updateDisplay(Graphics2D g) {
-		Sprite.animate(g);
+		if (gameHelper.getGameState().equals(Constants.GameState.COLLISION_DETECTED)) {
+			collisionAnimation(g);
+		} else {
+			Sprite.animate(g);
+		}
+	}
+
+	private void collisionAnimation(Graphics2D g) {
+		if (toggle) {
+			g.setPaint(Color.RED);
+		} else {
+			g.setPaint(Color.WHITE);
+		}
+		g.fill(new Rectangle(0, 0, 600, 600));
+		Sprite.sprites().forEach(sprite -> sprite.draw(g));
+		toggle = !toggle;
 	}
 
 	@Override
 	public void handleKeyPressed(KeyEvent e) {
 		Optional<Direction> newDir = Optional.empty();
+		Direction current = gameHelper.getDirection();
 
 		switch (e.getKeyCode()) {
 			case (37):
@@ -46,7 +67,7 @@ public class GameScreen extends GameView {
 				break;
 		}
 
-		if (newDir.isPresent()) {
+		if (newDir.isPresent() && !current.equals(newDir.get().opposite())) {
 			gameHelper.updateDirection(newDir.get());
 		}
 	}
