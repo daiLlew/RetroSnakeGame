@@ -22,6 +22,7 @@ public class GameManager implements GameHelper {
 	private GameView welcomeView;
 	private Snake snake;
 	private Direction direction;
+	private Direction newDirection;
 	private GameState gameState = IN_PLAY;
 
 	public static void main(String[] args) {
@@ -31,36 +32,31 @@ public class GameManager implements GameHelper {
 	public GameManager() {
 		this.welcomeView = new GameScreen(this);
 		this.direction = SOUTH;
+		this.newDirection = SOUTH;
 		this.snake = new Snake(this);
 		this.gui = new GUI(welcomeView);
 	}
 
 	private Runnable playGame = () -> {
 		try {
-			inPlay();
-			gameOver();
+			while (true) {
+				if (gameState.equals(IN_PLAY)) {
+					direction = newDirection;
+					gui.repaint();
+					checkCollisions();
+					Thread.sleep(300);
+				} else if (gameState.equals(COLLISION_DETECTED)) {
+					while (true) {
+						gui.repaint();
+						Thread.sleep(400);
+					}
+				}
+			}
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}
 		System.exit(0);
 	};
-
-	private void inPlay() throws InterruptedException {
-		while (gameState.equals(IN_PLAY)) {
-			checkCollisions();
-			gui.repaint();
-			Thread.sleep(300);
-		}
-	}
-
-	private void gameOver() throws InterruptedException {
-		int i = 6;
-		while (i > 0) {
-			gui.repaint();
-			Thread.sleep(400);
-			i--;
-		}
-	}
 
 	private void checkCollisions() {
 		if (Sprite.checkCollisions()) {
@@ -88,7 +84,7 @@ public class GameManager implements GameHelper {
 
 	@Override
 	public void updateDirection(Direction newDir) {
-		this.direction = newDir;
+		this.newDirection = newDir;
 	}
 
 	@Override

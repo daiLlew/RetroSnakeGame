@@ -1,5 +1,6 @@
 package dai.llew.snake.game;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 /**
@@ -7,9 +8,11 @@ import java.awt.Dimension;
  */
 public class Constants {
 
+	public static final Color HEAD_COLOR = new Color(0, 139, 0);
+
 	public static final Dimension WINDOW_DIMENSIONS = new Dimension(600, 600);
 
-	public static final Dimension BOARD_DIMENSIONS = new Dimension(550, 525);
+	public static final Dimension BOARD_DIMENSIONS = new Dimension(550, 550);
 
 	public static final int BODY_WIDTH = 25;
 

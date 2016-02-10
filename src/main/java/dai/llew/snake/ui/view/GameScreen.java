@@ -2,14 +2,17 @@ package dai.llew.snake.ui.view;
 
 import dai.llew.snake.game.Constants;
 import dai.llew.snake.game.GameHelper;
+import dai.llew.snake.game.sprite.Snake;
 import dai.llew.snake.game.sprite.Sprite;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
+import static dai.llew.snake.game.Constants.BOARD_DIMENSIONS;
 import static dai.llew.snake.game.Constants.Direction;
 import static dai.llew.snake.game.Constants.Direction.EAST;
 import static dai.llew.snake.game.Constants.Direction.NORTH;
