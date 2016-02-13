@@ -15,7 +15,6 @@ import static dai.llew.snake.game.Constants.GameState;
 import static dai.llew.snake.game.Constants.GameState.COLLISION_DETECTED;
 import static dai.llew.snake.game.Constants.GameState.IN_PLAY;
 
-
 public class GameManager implements GameHelper {
 
 	private GUI gui;

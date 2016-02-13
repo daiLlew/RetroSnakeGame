@@ -2,21 +2,22 @@ package dai.llew.snake.game.sprite;
 
 import dai.llew.snake.game.GameHelper;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.Line2D;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import static dai.llew.snake.game.Constants.BOARD_DIMENSIONS;
 import static dai.llew.snake.game.Constants.BODY_DIMENSIONS;
+import static dai.llew.snake.game.Constants.BODY_WIDTH;
 import static dai.llew.snake.game.Constants.HEAD_COLOR;
-import static dai.llew.snake.game.Constants.WINDOW_DIMENSIONS;
 
 public class Snake extends Sprite {
 
-	//private Rectangle boarder = new Rectangle(new Point(25, 10), BOARD_DIMENSIONS);
 	private Rectangle boarder = new Rectangle(0, 0, 600, 575);
 	private Rectangle head;
 	private LinkedList<Rectangle> body;
@@ -24,8 +25,9 @@ public class Snake extends Sprite {
 	public Snake(GameHelper gameHelper) {
 		super(gameHelper);
 		this.body = new LinkedList<>();
-		this.head = new Rectangle(new Point(BOARD_DIMENSIONS.width/2, BOARD_DIMENSIONS.height/2), BODY_DIMENSIONS);
-		for (int i=0; i < 12; i++) {
+		this.head = new Rectangle(new Point(BOARD_DIMENSIONS.width / 2, BOARD_DIMENSIONS.height / 2), BODY_DIMENSIONS);
+
+		for (int i = 0; i < 12; i++) {
 			addBody();
 		}
 	}
@@ -48,15 +50,22 @@ public class Snake extends Sprite {
 	@Override
 	public void draw(Graphics2D g) {
 		g.draw(boarder);
-		drawSnake(g, head, HEAD_COLOR);
-		body.forEach(rectangle -> drawSnake(g, rectangle, Color.GREEN));
+		drawSnake(g, head, Optional.of(getPoly(head)));
+		body.forEach(rectangle -> drawSnake(g, rectangle, Optional.empty()));
 	}
 
-	private void drawSnake(Graphics2D g, Rectangle rect, Color c) {
-		g.setPaint(c);
-		g.fill(rect);
-		g.setPaint(Color.gray);
-		g.draw(rect);
+	private void drawSnake(Graphics2D g, Rectangle rect, Optional<Polygon> poly) {
+		g.setStroke(new BasicStroke(2));
+		g.setPaint(Color.GREEN);
+		g.fillRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, 10, 10);
+
+		if (poly.isPresent()) {
+			g.setPaint(HEAD_COLOR);
+			g.fill(getPoly(rect));
+		}
+
+		g.setPaint(HEAD_COLOR);
+		g.drawRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, 10, 10);
 	}
 
 	@Override
@@ -84,5 +93,29 @@ public class Snake extends Sprite {
 			newTail = gameHelper.nextTailPoint(body.getLast().getLocation());
 		}
 		body.add(new Rectangle(newTail, BODY_DIMENSIONS));
+	}
+
+	private Polygon getPoly(Rectangle body) {
+		int[] x;
+		int[] y;
+		switch (gameHelper.getDirection()) {
+			case SOUTH:
+				x = new int[]{body.x, body.x + (BODY_WIDTH / 2), body.x + BODY_WIDTH};
+				y = new int[]{body.y, body.y + BODY_WIDTH, body.y};
+				break;
+			case NORTH:
+				x = new int[]{body.x, body.x + (BODY_WIDTH / 2), body.x + BODY_WIDTH};
+				y = new int[]{body.y + BODY_WIDTH, body.y, body.y + BODY_WIDTH};
+				break;
+			case EAST:
+				x = new int[]{body.x, body.x + BODY_WIDTH, body.x};
+				y = new int[]{body.y, body.y + (BODY_WIDTH / 2), body.y + BODY_WIDTH};
+				break;
+			default:
+				// WEST
+				x = new int[]{body.x + BODY_WIDTH, body.x, body.x + BODY_WIDTH};
+				y = new int[]{body.y, body.y + (BODY_WIDTH / 2), body.y + BODY_WIDTH};
+		}
+		return new Polygon(x, y, 3);
 	}
 }
