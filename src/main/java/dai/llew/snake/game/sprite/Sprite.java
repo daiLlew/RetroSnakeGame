@@ -4,15 +4,12 @@ import dai.llew.snake.game.GameHelper;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Created by daiLlew on 07/02/2016.
+ * Class defines common behaviour for Sprite implementations.
  */
 public abstract class Sprite {
 
@@ -32,22 +29,21 @@ public abstract class Sprite {
 	}
 
 	public static void animate(Graphics2D g) {
-		snake.draw(g);
-		snake.move();
-
-		apples.stream().forEach(apple -> {
-			apple.draw(g);
-		});
-	}
-
-	public static void checkCollisions() {
-		if (snake.isCollide()) {
-			snake.handleCollision();
-		}
+		apples.stream()
+				.filter(a -> a.isCollide())
+				.collect(Collectors.toList())
+				.forEach(a -> a.handleCollision());
 
 		apples.stream()
-				.filter(apple -> apple.isCollide()).collect(Collectors.toList())
-				.forEach(collision -> collision.handleCollision());
+				.forEach(apple -> apple.draw(g));
+
+		if (snake.isCollide()) {
+			snake.draw(g);
+			snake.handleCollision();
+		} else {
+			snake.move();
+			snake.draw(g);
+		}
 	}
 
 	public static boolean appleInPlay() {

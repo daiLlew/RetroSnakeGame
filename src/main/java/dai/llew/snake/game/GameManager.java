@@ -14,6 +14,7 @@ import static dai.llew.snake.game.Constants.Direction;
 import static dai.llew.snake.game.Constants.Direction.SOUTH;
 import static dai.llew.snake.game.Constants.GameState;
 import static dai.llew.snake.game.Constants.GameState.COLLISION_DETECTED;
+import static dai.llew.snake.game.Constants.GameState.GAME_OVER;
 import static dai.llew.snake.game.Constants.GameState.IN_PLAY;
 
 public class GameManager implements GameHelper {
@@ -40,18 +41,11 @@ public class GameManager implements GameHelper {
 	private Runnable playGame = () -> {
 		addApple();
 		try {
-			while (true) {
+			while (!gameState.equals(GAME_OVER)) {
 				if (gameState.equals(IN_PLAY)) {
-					direction = newDirection;
-					gui.repaint();
-					Sprite.checkCollisions();
-					Thread.sleep(300);
-					addApple();
+					inPlay();
 				} else if (gameState.equals(COLLISION_DETECTED)) {
-					while (true) {
-						gui.repaint();
-						Thread.sleep(400);
-					}
+					collisionDetected();
 				}
 			}
 		} catch (InterruptedException ex) {
@@ -59,6 +53,21 @@ public class GameManager implements GameHelper {
 		}
 		System.exit(0);
 	};
+
+	private void inPlay() throws InterruptedException {
+		direction = newDirection;
+		gui.repaint();
+		Thread.sleep(250);
+		addApple();
+	}
+
+	private void collisionDetected() throws InterruptedException {
+		for (int i=0; i < 7; i++) {
+			gui.repaint();
+			Thread.sleep(400);
+		}
+		updateGameState(GAME_OVER);
+	}
 
 	public void play() {
 		execute(playGame);

@@ -8,15 +8,15 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Random;
 
-import static dai.llew.snake.game.Constants.ARK;
 import static dai.llew.snake.game.Constants.BODY_DIMENSIONS;
 import static dai.llew.snake.game.Constants.BODY_WIDTH;
 import static dai.llew.snake.game.Constants.MAX_X_MULTIPLY_RANGE;
 import static dai.llew.snake.game.Constants.MAX_Y_MULTIPLY_RANGE;
+import static dai.llew.snake.game.Constants.STROKE;
 
 public class Apple extends Sprite {
 
-	private static final Color APPLE_BOARDER = new Color(153, 0, 0);
+	private static final Color APPLE_BOARDER = new Color(150, 0, 0);
 	private int[] xPoints = new int[3];
 	private int[] yPoints = new int[3];
 	private Rectangle area;
@@ -41,20 +41,16 @@ public class Apple extends Sprite {
 	@Override
 	public void draw(Graphics2D g) {
 		g.setPaint(Color.RED);
-		g.fillRoundRect(area.x, area.y, area.width, area.height, ARK, ARK);
+		g.fillOval(area.x, area.y, area.width, area.height);
 
+		g.setStroke(STROKE);
 		g.setPaint(APPLE_BOARDER);
-		g.drawRoundRect(area.x, area.y, area.width, area.height, ARK, ARK);
-
-		g.setPaint(Color.GREEN);
-		xPoints = new int[] {area.x + 2, area.x + (BODY_WIDTH / 2), area.x + BODY_WIDTH - 2};
-		yPoints = new int[] {area.y, area.y + (BODY_WIDTH / 2), area.y};
-		g.fillPolygon(xPoints, yPoints, 3);
+		g.drawOval(area.x, area.y, area.width, area.height);
 	}
 
 	@Override
 	public void move() {
-		// Apple doesnt move.
+		// Apple doesn't move.
 	}
 
 	@Override
@@ -64,7 +60,7 @@ public class Apple extends Sprite {
 
 	@Override
 	public void handleCollision() {
-		Sprite.removeApple(this);
 		Sprite.getSnake().addBody();
+		Sprite.removeApple(this);
 	}
 }
