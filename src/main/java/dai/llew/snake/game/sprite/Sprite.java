@@ -6,41 +6,56 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by daiLlew on 07/02/2016.
  */
 public abstract class Sprite {
 
-	protected static List<Sprite> ACTIVE_SPRITES = new ArrayList<>();
+	private static Sprite snake = null;
+	private static List<Sprite> apples = new ArrayList<>();
 
 	public static void register(Sprite sprite) {
-		ACTIVE_SPRITES.add(sprite);
+		if (sprite instanceof Snake && snake == null) {
+			snake = sprite;
+		} else {
+			apples.add(sprite);
+		}
 	}
 
-	public static void remove(Sprite sprite) {
-		ACTIVE_SPRITES.remove(sprite);
-	}
-
-	public static List<Sprite> sprites() {
-		return ACTIVE_SPRITES;
+	public static void removeApple(Sprite sprite) {
+		apples.remove(sprite);
 	}
 
 	public static void animate(Graphics2D g) {
-		sprites().forEach(sprite -> {
-			sprite.draw(g);
-			sprite.move();
+		snake.draw(g);
+		snake.move();
+
+		apples.stream().forEach(apple -> {
+			apple.draw(g);
 		});
 	}
 
-	public static boolean checkCollisions() {
-		return sprites()
-				.stream()
-				.filter(sprite -> sprite.isCollide())
-				.findFirst()
-				.isPresent();
+	public static void checkCollisions() {
+		if (snake.isCollide()) {
+			snake.handleCollision();
+		}
+
+		apples.stream()
+				.filter(apple -> apple.isCollide()).collect(Collectors.toList())
+				.forEach(collision -> collision.handleCollision());
+	}
+
+	public static boolean appleInPlay() {
+		return apples.stream().filter(sprite -> sprite instanceof Apple).count() == 1;
+	}
+
+	public static Snake getSnake() {
+		return (Snake) snake;
 	}
 
 	protected GameHelper gameHelper;
@@ -59,4 +74,8 @@ public abstract class Sprite {
 	public abstract void draw(Graphics2D g);
 
 	public abstract void move();
+
+	public abstract Rectangle getArea();
+
+	public abstract void handleCollision();
 }

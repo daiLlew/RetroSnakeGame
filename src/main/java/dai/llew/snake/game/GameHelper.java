@@ -22,4 +22,6 @@ public interface GameHelper {
 	Point nextTailPoint(Point tail);
 
 	Constants.GameState getGameState();
+
+	void updateGameState(Constants.GameState state);
 }

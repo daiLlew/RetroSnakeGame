@@ -1,5 +1,6 @@
 package dai.llew.snake.game;
 
+import dai.llew.snake.game.sprite.Apple;
 import dai.llew.snake.game.sprite.Snake;
 import dai.llew.snake.game.sprite.Sprite;
 import dai.llew.snake.ui.GUI;
@@ -37,13 +38,15 @@ public class GameManager implements GameHelper {
 	}
 
 	private Runnable playGame = () -> {
+		addApple();
 		try {
 			while (true) {
 				if (gameState.equals(IN_PLAY)) {
 					direction = newDirection;
 					gui.repaint();
-					checkCollisions();
+					Sprite.checkCollisions();
 					Thread.sleep(300);
+					addApple();
 				} else if (gameState.equals(COLLISION_DETECTED)) {
 					while (true) {
 						gui.repaint();
@@ -57,14 +60,14 @@ public class GameManager implements GameHelper {
 		System.exit(0);
 	};
 
-	private void checkCollisions() {
-		if (Sprite.checkCollisions()) {
-			this.gameState = COLLISION_DETECTED;
-		}
-	}
-
 	public void play() {
 		execute(playGame);
+	}
+
+	private void addApple() {
+		if (!Sprite.appleInPlay()) {
+			new Apple(this);
+		}
 	}
 
 	private void execute(Runnable job) {
@@ -127,5 +130,10 @@ public class GameManager implements GameHelper {
 	@Override
 	public GameState getGameState() {
 		return this.gameState;
+	}
+
+	@Override
+	public void updateGameState(GameState state) {
+		this.gameState = state;
 	}
 }

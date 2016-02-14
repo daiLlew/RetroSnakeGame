@@ -16,7 +16,13 @@ public class Constants {
 
 	public static final int BODY_WIDTH = 25;
 
+	public static final int MAX_X_MULTIPLY_RANGE = BOARD_DIMENSIONS.width / BODY_WIDTH;
+
+	public static final int MAX_Y_MULTIPLY_RANGE = BOARD_DIMENSIONS.height / BODY_WIDTH;
+
 	public static final Dimension BODY_DIMENSIONS = new Dimension(BODY_WIDTH, BODY_WIDTH);
+
+	public static final int ARK = 10;
 
 	public enum Direction {
 		NORTH,

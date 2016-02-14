@@ -1,5 +1,6 @@
 package dai.llew.snake.game.sprite;
 
+import dai.llew.snake.game.Constants;
 import dai.llew.snake.game.GameHelper;
 
 import java.awt.BasicStroke;
@@ -15,21 +16,29 @@ import static dai.llew.snake.game.Constants.BOARD_DIMENSIONS;
 import static dai.llew.snake.game.Constants.BODY_DIMENSIONS;
 import static dai.llew.snake.game.Constants.BODY_WIDTH;
 import static dai.llew.snake.game.Constants.HEAD_COLOR;
+import static dai.llew.snake.game.Constants.WINDOW_DIMENSIONS;
+import static dai.llew.snake.game.Constants.ARK;
 
+/**
+ * Class defines the Snake that the player moves around the board.
+ */
 public class Snake extends Sprite {
 
 	private Rectangle boarder = new Rectangle(0, 0, 600, 575);
 	private Rectangle head;
 	private LinkedList<Rectangle> body;
 
+	/**
+	 * Construct a new Snake.
+	 */
 	public Snake(GameHelper gameHelper) {
 		super(gameHelper);
 		this.body = new LinkedList<>();
 		this.head = new Rectangle(new Point(BOARD_DIMENSIONS.width / 2, BOARD_DIMENSIONS.height / 2), BODY_DIMENSIONS);
-
-		for (int i = 0; i < 12; i++) {
-			addBody();
-		}
+		addBody();
+		addBody();
+		addBody();
+		addBody();
 	}
 
 	@Override
@@ -39,12 +48,21 @@ public class Snake extends Sprite {
 
 	private boolean isBodyCollide() {
 		Rectangle next = new Rectangle(gameHelper.nextHeadPoint(head.getLocation()), BODY_DIMENSIONS);
-		return body.stream().filter(body -> body.contains(next)).findFirst().isPresent();
+		return body.stream().filter(body -> body.equals(next)).findFirst().isPresent();
 	}
 
 	private boolean isBoarderCollision() {
-		Rectangle next = new Rectangle(gameHelper.nextHeadPoint(head.getLocation()), BODY_DIMENSIONS);
-		return !boarder.contains(next);
+		switch (gameHelper.getDirection()) {
+			case NORTH:
+				return head.y <= 0;
+			case SOUTH:
+				return (head.y + BODY_WIDTH) >= boarder.height;
+			case EAST:
+				return (head.x + BODY_WIDTH) >= WINDOW_DIMENSIONS.width;
+			case WEST:
+				return head.x <= 0;
+		}
+		return false;
 	}
 
 	@Override
@@ -57,7 +75,7 @@ public class Snake extends Sprite {
 	private void drawSnake(Graphics2D g, Rectangle rect, Optional<Polygon> poly) {
 		g.setStroke(new BasicStroke(2));
 		g.setPaint(Color.GREEN);
-		g.fillRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, 10, 10);
+		g.fillRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, ARK, ARK);
 
 		if (poly.isPresent()) {
 			g.setPaint(HEAD_COLOR);
@@ -65,7 +83,7 @@ public class Snake extends Sprite {
 		}
 
 		g.setPaint(HEAD_COLOR);
-		g.drawRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, 10, 10);
+		g.drawRoundRect(rect.x, rect.y, BODY_WIDTH, BODY_WIDTH, ARK, ARK);
 	}
 
 	@Override
@@ -77,6 +95,16 @@ public class Snake extends Sprite {
 		for (Rectangle rect : body) {
 			prePos = updateLocation(rect, prePos);
 		}
+	}
+
+	@Override
+	public Rectangle getArea() {
+		return this.head;
+	}
+
+	@Override
+	public void handleCollision() {
+		gameHelper.updateGameState(Constants.GameState.COLLISION_DETECTED);
 	}
 
 	private Point updateLocation(Rectangle rect, Point newPoint) {

@@ -46,7 +46,7 @@ public class GameScreen extends GameView {
 			g.setPaint(Color.WHITE);
 		}
 		g.fill(new Rectangle(0, 0, 600, 600));
-		Sprite.sprites().forEach(sprite -> sprite.draw(g));
+		Sprite.getSnake().draw(g);
 		toggle = !toggle;
 	}
 
