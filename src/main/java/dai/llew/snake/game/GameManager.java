@@ -16,6 +16,7 @@ import static dai.llew.snake.game.Constants.GameState;
 import static dai.llew.snake.game.Constants.GameState.COLLISION_DETECTED;
 import static dai.llew.snake.game.Constants.GameState.GAME_OVER;
 import static dai.llew.snake.game.Constants.GameState.IN_PLAY;
+import static dai.llew.snake.game.Level.ONE;
 
 public class GameManager implements GameHelper {
 
@@ -25,6 +26,9 @@ public class GameManager implements GameHelper {
 	private Direction direction;
 	private Direction newDirection;
 	private GameState gameState = IN_PLAY;
+	private int score = 0;
+	private Level level = Level.next();
+	private int appleCount = 0;
 
 	public static void main(String[] args) {
 		new GameManager().play();
@@ -57,12 +61,12 @@ public class GameManager implements GameHelper {
 	private void inPlay() throws InterruptedException {
 		direction = newDirection;
 		gui.repaint();
-		Thread.sleep(250);
+		Thread.sleep(this.level.speed());
 		addApple();
 	}
 
 	private void collisionDetected() throws InterruptedException {
-		for (int i=0; i < 7; i++) {
+		for (int i = 0; i < 7; i++) {
 			gui.repaint();
 			Thread.sleep(400);
 		}
@@ -144,5 +148,20 @@ public class GameManager implements GameHelper {
 	@Override
 	public void updateGameState(GameState state) {
 		this.gameState = state;
+	}
+
+	@Override
+	public void scored() {
+		this.appleCount++;
+		this.score += 1 * level.scoreMultiplier();
+		if ((appleCount % 10) == 0) {
+			this.level = Level.next();
+			System.out.println("You reached level " + this.level.name());
+		}
+	}
+
+	@Override
+	public int getScore() {
+		return this.score;
 	}
 }

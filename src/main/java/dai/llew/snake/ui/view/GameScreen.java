@@ -7,6 +7,7 @@ import dai.llew.snake.game.sprite.Sprite;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,8 @@ import static dai.llew.snake.game.Constants.Direction.EAST;
 import static dai.llew.snake.game.Constants.Direction.NORTH;
 import static dai.llew.snake.game.Constants.Direction.SOUTH;
 import static dai.llew.snake.game.Constants.Direction.WEST;
+import static dai.llew.snake.game.Constants.FONT;
+import static dai.llew.snake.game.Constants.WINDOW_DIMENSIONS;
 
 /**
  * Created by daiLlew on 07/02/2016.
@@ -36,6 +39,7 @@ public class GameScreen extends GameView {
 			collisionAnimation(g);
 		} else {
 			Sprite.animate(g);
+			displayScore(g);
 		}
 	}
 
@@ -73,5 +77,15 @@ public class GameScreen extends GameView {
 		if (newDir.isPresent() && !current.equals(newDir.get().opposite())) {
 			gameHelper.updateDirection(newDir.get());
 		}
+	}
+
+	private void displayScore(Graphics2D g) {
+		FontMetrics fm = g.getFontMetrics();
+
+		g.setPaint(Color.BLACK);
+		g.setFont(FONT);
+		String msg = String.format("Score: %s", gameHelper.getScore());
+		int x = (WINDOW_DIMENSIONS.width / 2) - fm.stringWidth(msg);
+		g.drawString(msg, x, 30);
 	}
 }

@@ -24,4 +24,8 @@ public interface GameHelper {
 	Constants.GameState getGameState();
 
 	void updateGameState(Constants.GameState state);
+
+	void scored();
+
+	int getScore();
 }

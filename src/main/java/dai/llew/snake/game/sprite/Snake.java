@@ -119,6 +119,7 @@ public class Snake extends Sprite {
 			newTail = gameHelper.nextTailPoint(body.getLast().getLocation());
 		}
 		body.add(new Rectangle(newTail, BODY_DIMENSIONS));
+		gameHelper.scored();
 	}
 
 	private Polygon getPoly(Rectangle body) {

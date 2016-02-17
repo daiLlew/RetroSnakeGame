@@ -16,11 +16,9 @@ import static dai.llew.snake.game.Constants.STROKE;
 
 public class Apple extends Sprite {
 
-	private static final Color APPLE_BOARDER = new Color(150, 0, 0);
-	private int[] xPoints = new int[3];
-	private int[] yPoints = new int[3];
-	private Rectangle area;
-	private Random random;
+	protected static final Color APPLE_BOARDER = new Color(150, 0, 0);
+	protected Rectangle area;
+	protected Random random;
 
 	public Apple(GameHelper gameHelper) {
 		super(gameHelper);

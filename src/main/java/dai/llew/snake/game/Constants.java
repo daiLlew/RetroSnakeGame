@@ -3,6 +3,7 @@ package dai.llew.snake.game;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Stroke;
 
 /**
@@ -48,6 +49,8 @@ public class Constants {
 	public static final Stroke STROKE = new BasicStroke(2);
 
 	public static final int ARK = 10;
+
+	public static final Font FONT = new Font("Courier New", 1, 35);
 
 	/**
 	 * Type to represent the direction of movement.
